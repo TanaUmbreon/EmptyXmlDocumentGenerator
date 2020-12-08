@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 # カスタム設定
-EmptyXmlDocumentGenerator.Test.xml
+EmptyXmlDocumentGenerator.Test (Expected).xml
