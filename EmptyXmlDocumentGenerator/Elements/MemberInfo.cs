@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace EmptyXmlDocumentGenerator.Elements
 {
@@ -12,42 +12,108 @@ namespace EmptyXmlDocumentGenerator.Elements
     public class MemberInfo : IXElementBuilder
     {
         private readonly string name;
+
         private readonly SummaryInfo summary;
-        private readonly List<TypeparamInfo>? typeparams;
-        //private readonly List<ParamInfo>? parameters;
-        //private readonly ReturnsInfo? returns;
+        private readonly List<TypeparamInfo> typeparams;
+        private readonly List<ParamInfo> parameters;
+        private readonly ReturnsInfo? returns;
 
         /// <summary>
         /// <see cref="MemberInfo"/> の新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="type"></param>
-        public MemberInfo(Type type)
+        /// <param name="member"></param>
+        public MemberInfo(System.Reflection.MemberInfo member)
         {
-            name = GetNamePrefix(type) + (type.FullName ?? "");
+            name = GetFullName(member);
             summary = new SummaryInfo();
-            if (type.IsGenericType)
+            typeparams = new List<TypeparamInfo>();
+            parameters = new List<ParamInfo>();
+            returns = null;
+
+            if (member is Type type && type.IsGenericType)
             {
-                typeparams = new List<TypeparamInfo>();
-                foreach (Type genericArgument in type.GetGenericArguments())
+                typeparams.AddRange(type.GetGenericArguments().Select(a => new TypeparamInfo(a)));
+            }
+
+            if (member is MethodInfo method)
+            {
+                typeparams.AddRange(method.GetGenericArguments().Select(a => new TypeparamInfo(a)));
+                parameters.AddRange(method.GetParameters().Select(p => new ParamInfo(p)));
+                if (method.ReturnType != typeof(void))
                 {
-                    typeparams.Add(new TypeparamInfo(genericArgument));
+                    returns = new ReturnsInfo();
                 }
+            }
+
+            if (member is ConstructorInfo constructor)
+            {
+                parameters.AddRange(constructor.GetParameters().Select(p => new ParamInfo(p)));
             }
         }
 
-        private string GetNamePrefix(Type type)
+        private string GetFullName(System.Reflection.MemberInfo member)
         {
-            if (type.IsClass || type.IsValueType || type.IsInterface) { return "T:"; }
-            return "?:";
+            return member switch
+            {
+                Type t => "T:" + t.FullName ?? "",
+                EventInfo e => "E:" + GetTypeName(e) + e.Name,
+                FieldInfo f => "F:" + GetTypeName(f) + f.Name,
+                MethodInfo m => "M:" + GetTypeName(m) + GetName(m) + GetParameters(m),
+                ConstructorInfo c => "M:" + GetTypeName(c) + GetName(c) + GetParameters(c),
+                PropertyInfo p => "P:" + GetTypeName(p) + p.Name,
+                _ => $"?:{member.Name}",
+            };
+        }
+
+        private string GetTypeName(System.Reflection.MemberInfo member)
+        {
+            if (member.DeclaringType == null) { return ""; }
+            return member.DeclaringType.FullName + ".";
+        }
+
+        private string GetName(MethodBase method)
+        {
+            if (method.IsConstructor) { return method.Name.Replace('.', '#'); }
+            if (method.IsGenericMethod) { return method.Name + "``" + method.GetGenericArguments().Length; }
+            return method.Name;
+        }
+
+        private string GetParameters(MethodBase method)
+        {
+            var parameters = method.GetParameters();
+            if (parameters.Length <= 0) { return ""; }
+
+            return "(" + string.Join(',', parameters.Select(p => ToParameterString(p))) + ")";
+        }
+
+        private string ToParameterString(ParameterInfo parameter)
+        {
+            Type parameterType = parameter.ParameterType;
+
+            if (parameterType.IsGenericTypeParameter)
+            {
+                return "`" + parameterType.GenericParameterPosition;
+            }
+            if (parameterType.IsGenericMethodParameter)
+            {
+                return "``" + parameterType.GenericParameterPosition;
+            }
+            if (parameterType.IsGenericType)
+            {
+                // TODO: ジェネリック型の場合のパラメータ出力パターンを実装する。
+            }
+
+            return parameterType.FullName ?? "";
         }
 
         public XElement Build()
         {
-            var elements = new List<IXElementBuilder>();
-            elements.Add(summary);
-            if (typeparams != null)
+            var elements = new List<IXElementBuilder> { summary };
+            elements.AddRange(typeparams);
+            elements.AddRange(parameters);
+            if (returns != null)
             {
-                elements.AddRange(typeparams);
+                elements.Add(returns);
             }
 
             return new XElement("member", 
