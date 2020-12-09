@@ -22,7 +22,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <see cref="MemberElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="member"></param>
-        public MemberElementInfo(System.Reflection.MemberInfo member)
+        public MemberElementInfo(MemberInfo member)
         {
             name = GetFullName(member);
             summary = new SummaryElementInfo();
@@ -51,7 +51,7 @@ namespace EmptyXmlDocumentGenerator.Elements
             }
         }
 
-        private string GetFullName(System.Reflection.MemberInfo member)
+        private string GetFullName(MemberInfo member)
         {
             return member switch
             {
@@ -65,7 +65,7 @@ namespace EmptyXmlDocumentGenerator.Elements
             };
         }
 
-        private string GetTypeName(System.Reflection.MemberInfo member)
+        private string GetTypeName(MemberInfo member)
         {
             if (member.DeclaringType == null) { return ""; }
             return member.DeclaringType.FullName + ".";
