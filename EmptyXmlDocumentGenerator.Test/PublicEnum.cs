@@ -1,15 +1,13 @@
 ﻿namespace EmptyXmlDocumentGenerator.Test
 {
-    /// <summary>
-    /// public enum PublicEnum
-    /// </summary>
+    /// <summary></summary>
     public enum PublicEnum
     {
-        /// <summary>Value1</summary>
+        /// <summary></summary>
         Value1,
-        /// <summary>Value2</summary>
+        /// <summary></summary>
         Value2,
-        /// <summary>Value3</summary>
+        /// <summary></summary>
         Value3,
     }
 }

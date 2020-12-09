@@ -14,9 +14,7 @@ using System.Collections.Generic;
 
 namespace EmptyXmlDocumentGenerator.Test
 {
-    /// <summary>
-    /// public class PublicClass
-    /// </summary>
+    /// <summary></summary>
     public class PublicClass
     {
         /// <summary>private int privateField</summary>
