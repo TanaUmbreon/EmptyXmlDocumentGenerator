@@ -5,7 +5,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// summary 要素の情報を格納します。
     /// </summary>
-    public class SummaryElementInfo : IXElementBuilder
+    public class SummaryElementInfo : IXElementConvertable
     {
         /// <summary>
         /// <see cref="SummaryElementInfo"/> の新しいインスタンスを生成します。

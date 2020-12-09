@@ -5,7 +5,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// name 要素の情報を格納します。
     /// </summary>
-    public class NameElementInfo : IXElementBuilder
+    public class NameElementInfo : IXElementConvertable
     {
         private readonly string content;
 

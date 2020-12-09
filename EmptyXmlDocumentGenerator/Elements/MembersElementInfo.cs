@@ -9,7 +9,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// members 要素の情報を格納します。
     /// </summary>
-    public class MembersElementInfo : IXElementBuilder
+    public class MembersElementInfo : IXElementConvertable
     {
         private readonly List<MemberElementInfo> members;
 

@@ -6,7 +6,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// typeparam 要素の情報を格納します。
     /// </summary>
-    public class TypeparamElementInfo : IXElementBuilder
+    public class TypeparamElementInfo : IXElementConvertable
     {
         private readonly string name;
 
