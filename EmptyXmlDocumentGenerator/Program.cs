@@ -24,7 +24,7 @@ namespace EmptyXmlDocumentGenerator
                     var file = new FileInfo(fileName);
 
                     Assembly assembly = Assembly.LoadFrom(file.FullName);
-                    DocInfo doc = new DocInfo(assembly);
+                    DocElementInfo doc = new DocElementInfo(assembly);
                     var document = new XDocument(doc.Build());
 
                     document.Save(Path.Combine(

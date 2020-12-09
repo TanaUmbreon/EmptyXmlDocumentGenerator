@@ -9,21 +9,21 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// members 要素の情報を格納します。
     /// </summary>
-    public class MembersInfo : IXElementBuilder
+    public class MembersElementInfo : IXElementBuilder
     {
-        private readonly List<MemberInfo> members;
+        private readonly List<MemberElementInfo> members;
 
         /// <summary>
-        /// <see cref="MembersInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="MembersElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="assembly"></param>
-        public MembersInfo(Assembly assembly)
+        public MembersElementInfo(Assembly assembly)
         {
-            members = new List<MemberInfo>();
+            members = new List<MemberElementInfo>();
 
             foreach (Type t in assembly.GetTypes().Where(t => t.IsPublic))
             {
-                members.Add(new MemberInfo(t));
+                members.Add(new MemberElementInfo(t));
 
                 foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
                 {
@@ -31,7 +31,7 @@ namespace EmptyXmlDocumentGenerator.Elements
                     if (@event.AddMethod?.IsPrivate ?? true) { continue; }
                     if (@event.AddMethod?.IsAssembly ?? true) { continue; }
 
-                    members.Add(new MemberInfo(@event));
+                    members.Add(new MemberElementInfo(@event));
                 }
 
                 foreach (var field in t.GetRuntimeFields().OrderBy(f => f.Name))
@@ -39,7 +39,7 @@ namespace EmptyXmlDocumentGenerator.Elements
                     if (field.IsPrivate) { continue; }
                     if (field.IsAssembly) { continue; }
 
-                    members.Add(new MemberInfo(field));
+                    members.Add(new MemberElementInfo(field));
                 }
 
                 foreach (var constructor in t.GetConstructors().OrderBy(c => c.Name))
@@ -47,7 +47,7 @@ namespace EmptyXmlDocumentGenerator.Elements
                     if (constructor.IsPrivate) { continue; }
                     if (constructor.IsAssembly) { continue; }
 
-                    members.Add(new MemberInfo(constructor));
+                    members.Add(new MemberElementInfo(constructor));
                 }
 
                 foreach (var method in t.GetRuntimeMethods().OrderBy(m => m.Name))
@@ -61,7 +61,7 @@ namespace EmptyXmlDocumentGenerator.Elements
                     // 継承されたメンバーの場合は除外する
                     if (!method.DeclaringType?.Equals(t) ?? false) { continue; }
 
-                    members.Add(new MemberInfo(method));
+                    members.Add(new MemberElementInfo(method));
                 }
 
                 foreach (var property in t.GetProperties().OrderBy(p => p.Name))
@@ -70,7 +70,7 @@ namespace EmptyXmlDocumentGenerator.Elements
                     //if (property.IsPrivate) { continue; }
                     //if (property.IsAssembly) { continue; }
 
-                    members.Add(new MemberInfo(property));
+                    members.Add(new MemberElementInfo(property));
                 }
             }
         }

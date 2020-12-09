@@ -5,12 +5,12 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// summary 要素の情報を格納します。
     /// </summary>
-    public class SummaryInfo : IXElementBuilder
+    public class SummaryElementInfo : IXElementBuilder
     {
         /// <summary>
-        /// <see cref="SummaryInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="SummaryElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
-        public SummaryInfo() { }
+        public SummaryElementInfo() { }
 
         public XElement Build() => new XElement("summary", "");
     }

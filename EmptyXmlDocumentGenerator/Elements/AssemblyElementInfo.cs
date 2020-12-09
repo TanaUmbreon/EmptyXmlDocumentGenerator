@@ -7,17 +7,17 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// assembly 要素の情報を格納します。
     /// </summary>
-    public class AssemblyInfo : IXElementBuilder
+    public class AssemblyElementInfo : IXElementBuilder
     {
-        private readonly NameInfo name;
+        private readonly NameElementInfo name;
 
         /// <summary>
-        /// <see cref="AssemblyInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="AssemblyElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="assembly"></param>
-        public AssemblyInfo(Assembly assembly)
+        public AssemblyElementInfo(Assembly assembly)
         {
-            name = new NameInfo(Path.GetFileNameWithoutExtension(assembly.Location));
+            name = new NameElementInfo(Path.GetFileNameWithoutExtension(assembly.Location));
         }
 
         public XElement Build() => new XElement("assembly", name.Build());

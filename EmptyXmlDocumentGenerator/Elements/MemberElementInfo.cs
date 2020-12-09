@@ -9,45 +9,45 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// member 要素の情報を格納します。
     /// </summary>
-    public class MemberInfo : IXElementBuilder
+    public class MemberElementInfo : IXElementBuilder
     {
         private readonly string name;
 
-        private readonly SummaryInfo summary;
-        private readonly List<TypeparamInfo> typeparams;
-        private readonly List<ParamInfo> parameters;
-        private readonly ReturnsInfo? returns;
+        private readonly SummaryElementInfo summary;
+        private readonly List<TypeparamElementInfo> typeparams;
+        private readonly List<ParamElementInfo> parameters;
+        private readonly ReturnsElementInfo? returns;
 
         /// <summary>
-        /// <see cref="MemberInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="MemberElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="member"></param>
-        public MemberInfo(System.Reflection.MemberInfo member)
+        public MemberElementInfo(System.Reflection.MemberInfo member)
         {
             name = GetFullName(member);
-            summary = new SummaryInfo();
-            typeparams = new List<TypeparamInfo>();
-            parameters = new List<ParamInfo>();
+            summary = new SummaryElementInfo();
+            typeparams = new List<TypeparamElementInfo>();
+            parameters = new List<ParamElementInfo>();
             returns = null;
 
             if (member is Type type && type.IsGenericType)
             {
-                typeparams.AddRange(type.GetGenericArguments().Select(a => new TypeparamInfo(a)));
+                typeparams.AddRange(type.GetGenericArguments().Select(a => new TypeparamElementInfo(a)));
             }
 
             if (member is MethodInfo method)
             {
-                typeparams.AddRange(method.GetGenericArguments().Select(a => new TypeparamInfo(a)));
-                parameters.AddRange(method.GetParameters().Select(p => new ParamInfo(p)));
+                typeparams.AddRange(method.GetGenericArguments().Select(a => new TypeparamElementInfo(a)));
+                parameters.AddRange(method.GetParameters().Select(p => new ParamElementInfo(p)));
                 if (method.ReturnType != typeof(void))
                 {
-                    returns = new ReturnsInfo();
+                    returns = new ReturnsElementInfo();
                 }
             }
 
             if (member is ConstructorInfo constructor)
             {
-                parameters.AddRange(constructor.GetParameters().Select(p => new ParamInfo(p)));
+                parameters.AddRange(constructor.GetParameters().Select(p => new ParamElementInfo(p)));
             }
         }
 

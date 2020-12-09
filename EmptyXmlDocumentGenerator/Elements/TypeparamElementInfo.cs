@@ -6,14 +6,14 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// typeparam 要素の情報を格納します。
     /// </summary>
-    public class TypeparamInfo : IXElementBuilder
+    public class TypeparamElementInfo : IXElementBuilder
     {
         private readonly string name;
 
         /// <summary>
-        /// <see cref="TypeparamInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="TypeparamElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
-        public TypeparamInfo(Type type)
+        public TypeparamElementInfo(Type type)
         {
             name = type.Name;
         }

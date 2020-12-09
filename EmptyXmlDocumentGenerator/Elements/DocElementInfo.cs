@@ -6,19 +6,19 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// doc 要素の情報を格納します。
     /// </summary>
-    public class DocInfo : IXElementBuilder
+    public class DocElementInfo : IXElementBuilder
     {
-        private readonly AssemblyInfo assembly;
-        private readonly MembersInfo members;
+        private readonly AssemblyElementInfo assembly;
+        private readonly MembersElementInfo members;
 
         /// <summary>
-        /// <see cref="DocInfo"/> の新しいインスタンスを生成します。
+        /// <see cref="DocElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="assembly"></param>
-        public DocInfo(Assembly assembly)
+        public DocElementInfo(Assembly assembly)
         {
-            this.assembly = new AssemblyInfo(assembly);
-            members = new MembersInfo(assembly);
+            this.assembly = new AssemblyElementInfo(assembly);
+            members = new MembersElementInfo(assembly);
         }
 
         public XElement Build() => new XElement("doc",
