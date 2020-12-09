@@ -20,6 +20,6 @@ namespace EmptyXmlDocumentGenerator.Elements
             name = new NameElementInfo(Path.GetFileNameWithoutExtension(assembly.Location));
         }
 
-        public XElement Build() => new XElement("assembly", name.Build());
+        public XElement ToXElement() => new XElement("assembly", name.ToXElement());
     }
 }

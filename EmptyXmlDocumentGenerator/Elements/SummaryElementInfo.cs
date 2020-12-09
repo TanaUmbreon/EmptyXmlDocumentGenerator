@@ -12,6 +12,6 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// </summary>
         public SummaryElementInfo() { }
 
-        public XElement Build() => new XElement("summary", "");
+        public XElement ToXElement() => new XElement("summary", "");
     }
 }

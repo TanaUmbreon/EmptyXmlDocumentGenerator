@@ -19,7 +19,7 @@ namespace EmptyXmlDocumentGenerator.Elements
             name = parameter.Name ?? "";
         }
 
-        public XElement Build() => new XElement("param",
+        public XElement ToXElement() => new XElement("param",
             new XAttribute("name", name),
             "");
     }

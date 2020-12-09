@@ -75,6 +75,6 @@ namespace EmptyXmlDocumentGenerator.Elements
             }
         }
 
-        public XElement Build() => new XElement("members", members.Select(m => m.Build()));
+        public XElement ToXElement() => new XElement("members", members.Select(m => m.ToXElement()));
     }
 }

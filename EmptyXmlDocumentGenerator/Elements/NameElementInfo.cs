@@ -18,6 +18,6 @@ namespace EmptyXmlDocumentGenerator.Elements
             this.content = content;
         }
 
-        public XElement Build() => new XElement("name", content);
+        public XElement ToXElement() => new XElement("name", content);
     }
 }

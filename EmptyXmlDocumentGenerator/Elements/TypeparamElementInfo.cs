@@ -18,7 +18,7 @@ namespace EmptyXmlDocumentGenerator.Elements
             name = type.Name;
         }
 
-        public XElement Build() => new XElement("typeparam", 
+        public XElement ToXElement() => new XElement("typeparam", 
             new XAttribute("name", name),
             "");
     }

@@ -9,7 +9,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// member 要素の情報を格納します。
     /// </summary>
-    public class MemberElementInfo : IXElementBuilder
+    public class MemberElementInfo : IXElementConvertable
     {
         private readonly string name;
 
@@ -106,9 +106,9 @@ namespace EmptyXmlDocumentGenerator.Elements
             return parameterType.FullName ?? "";
         }
 
-        public XElement Build()
+        public XElement ToXElement()
         {
-            var elements = new List<IXElementBuilder> { summary };
+            var elements = new List<IXElementConvertable> { summary };
             elements.AddRange(typeparams);
             elements.AddRange(parameters);
             if (returns != null)
@@ -118,7 +118,7 @@ namespace EmptyXmlDocumentGenerator.Elements
 
             return new XElement("member", 
                 new XAttribute("name", name),
-                elements.Select(e => e.Build()));
+                elements.Select(e => e.ToXElement()));
         }
     }
 }

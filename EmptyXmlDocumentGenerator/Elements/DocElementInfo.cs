@@ -6,7 +6,7 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// doc 要素の情報を格納します。
     /// </summary>
-    public class DocElementInfo : IXElementBuilder
+    public class DocElementInfo : IXElementConvertable
     {
         private readonly AssemblyElementInfo assembly;
         private readonly MembersElementInfo members;
@@ -21,8 +21,8 @@ namespace EmptyXmlDocumentGenerator.Elements
             members = new MembersElementInfo(assembly);
         }
 
-        public XElement Build() => new XElement("doc",
-            assembly.Build(),
-            members.Build());
+        public XElement ToXElement() => new XElement("doc",
+            assembly.ToXElement(),
+            members.ToXElement());
     }
 }
