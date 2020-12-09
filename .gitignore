@@ -351,3 +351,4 @@ MigrationBackup/
 
 # カスタム設定
 EmptyXmlDocumentGenerator.Test (Expected).xml
+launchSettings.json
