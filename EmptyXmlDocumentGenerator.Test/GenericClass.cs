@@ -198,10 +198,15 @@ namespace EmptyXmlDocumentGenerator.Test
         #region P:プロパティ
 
         /// <summary></summary>
+        public IList<T> GenericTypeProperty { get; set; }
+
+        /// <summary></summary>
         public T GetOnlyProperty { get; }
 
         /// <summary></summary>
         public T GetSetProperty { get; set; }
+
+        private T PrivateProperty { get; set; }
 
         /// <summary></summary>
         public T PrivateSetPublicGetProperty { get; private set; }
@@ -211,8 +216,6 @@ namespace EmptyXmlDocumentGenerator.Test
 
         /// <summary></summary>
         public T SetOnlyProperty { set { } }
-
-        private IList<T> GenericTypeProperty { get; set; }
 
         /// <summary></summary>
         public virtual T VirtualProperty { get; set; }
