@@ -2,7 +2,6 @@
 #pragma warning disable CS0169
 #pragma warning disable CS0649
 #pragma warning disable CA1822
-#pragma warning disable CS1072
 #pragma warning disable CS8603
 #pragma warning disable CS8618
 #pragma warning disable IDE0044

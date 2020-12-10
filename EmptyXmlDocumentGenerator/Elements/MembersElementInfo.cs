@@ -21,8 +21,11 @@ namespace EmptyXmlDocumentGenerator.Elements
         {
             members = new List<MemberElementInfo>();
 
-            foreach (Type t in assembly.GetTypes().Where(t => t.IsPublic))
+            foreach (Type t in assembly.ExportedTypes)
             {
+                // 他の依存アセンブリから参照した型情報は除外する
+                if (t.Module != assembly.ManifestModule) { continue; }
+
                 members.Add(new MemberElementInfo(t));
 
                 foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
@@ -38,6 +41,8 @@ namespace EmptyXmlDocumentGenerator.Elements
                 {
                     if (field.IsPrivate) { continue; }
                     if (field.IsAssembly) { continue; }
+
+                    if (field.IsSpecialName) { continue; }
 
                     members.Add(new MemberElementInfo(field));
                 }
