@@ -199,25 +199,56 @@ namespace EmptyXmlDocumentGenerator.Test
         /// <summary></summary>
         public IList<int> GenericTypeProperty { get; set; }
 
-        /// <summary></summary>
-        public float GetOnlyProperty { get; }
+        internal int InternalGetOnlyProperty { get; }
+
+        internal int InternalProperty { get; set; }
 
         /// <summary></summary>
-        public float GetSetProperty { get; set; }
-
-        private float PrivateProperty { get; set; }
+        internal protected int InternalProtectedGetOnlyProperty { get; }
 
         /// <summary></summary>
-        public float PrivateSetPublicGetProperty { get; private set; }
+        internal protected int InternalProtectedProperty { get; set; }
+
+        /// <summary></summary>
+        internal protected int InternalProtectedSetOnlyProperty { set { } }
+
+        internal int InternalSetOnlyProperty { set { } }
+
+        private int PrivateGetOnlyProperty { get; }
+
+        private int PrivateProperty { get; set; }
+
+        private int PrivateSetOnlyProperty { set { } }
+
+        /// <summary></summary>
+        public int PrivateSetPublicGetProperty { get; private set; }
+
+        /// <summary></summary>
+        protected int ProtectedGetOnlyProperty { get; }
+
+        /// <summary></summary>
+        protected int ProtectedProperty { get; set; }
+
+        /// <summary></summary>
+        protected int ProtectedSetOnlyProperty { set { } }
+
+        /// <summary></summary>
+        public int PublicGetOnlyProperty { get; }
+
+        /// <summary></summary>
+        public int PublicProperty { get; set; }
+
+        /// <summary></summary>
+        public int PublicSetOnlyProperty { set { } }
 
         /// <summary></summary>
         public int PublicSetPrivateGetProperty { private get; set; }
 
         /// <summary></summary>
-        public float SetOnlyProperty { set { } }
+        public int SetOnlyProperty { set { } }
 
         /// <summary></summary>
-        public virtual float VirtualProperty { get; set; }
+        public virtual int VirtualProperty { get; set; }
 
         #endregion
     }

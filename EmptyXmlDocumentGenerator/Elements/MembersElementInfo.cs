@@ -21,11 +21,8 @@ namespace EmptyXmlDocumentGenerator.Elements
         {
             members = new List<MemberElementInfo>();
 
-            foreach (Type t in assembly.ExportedTypes)
+            foreach (Type t in assembly.ExportedTypes.OrderBy(t => t.Namespace).OrderBy(t=> t.Name))
             {
-                // 他の依存アセンブリから参照した型情報は除外する
-                if (t.Module != assembly.ManifestModule) { continue; }
-
                 members.Add(new MemberElementInfo(t));
 
                 foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
@@ -69,11 +66,13 @@ namespace EmptyXmlDocumentGenerator.Elements
                     members.Add(new MemberElementInfo(method));
                 }
 
-                foreach (var property in t.GetProperties().OrderBy(p => p.Name))
+                foreach (var property in t.GetRuntimeProperties().OrderBy(p => p.Name))
                 {
-                    // TODO: get/setメソッドを考慮したアクセス修飾子による無視を実装する。
-                    //if (property.IsPrivate) { continue; }
-                    //if (property.IsAssembly) { continue; }
+#pragma warning disable CS8602
+                    bool isInvisibleGet = (!property.CanRead) || (property.GetMethod.IsPrivate) || (property.GetMethod.IsAssembly);
+                    bool isInvisibleSet = (!property.CanWrite) || (property.SetMethod.IsPrivate) || (property.SetMethod.IsAssembly);
+#pragma warning restore CS8602
+                    if (isInvisibleGet && isInvisibleSet) { continue; }
 
                     members.Add(new MemberElementInfo(property));
                 }
