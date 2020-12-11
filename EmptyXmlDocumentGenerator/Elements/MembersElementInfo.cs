@@ -21,8 +21,17 @@ namespace EmptyXmlDocumentGenerator.Elements
         {
             members = new List<MemberElementInfo>();
 
-            foreach (Type t in assembly.ExportedTypes.OrderBy(t => t.Namespace).OrderBy(t=> t.Name))
+            foreach (Type t in assembly.DefinedTypes.OrderBy(t => t.Namespace).OrderBy(t=> t.FullName))
             {
+                if (t.IsNested)
+                {
+                    if (t.IsNestedAssembly) { continue; }
+                    if (t.IsNestedPrivate) { continue; }
+                }
+                else
+                {
+                    if (t.IsNotPublic) { continue; }
+                }
                 members.Add(new MemberElementInfo(t));
 
                 foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))

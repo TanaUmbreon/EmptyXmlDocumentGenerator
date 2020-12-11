@@ -53,13 +53,13 @@ namespace EmptyXmlDocumentGenerator.Test
         public int? nullableField;
 
         private int privateField;
- 
+
         /// <summary></summary>
         protected int protectedField;
-       
+
         /// <summary></summary>
         public int publicField;
-       
+
         /// <summary></summary>
         public readonly int readonlyField;
 
@@ -249,6 +249,55 @@ namespace EmptyXmlDocumentGenerator.Test
 
         /// <summary></summary>
         public virtual int VirtualProperty { get; set; }
+
+        #endregion
+
+        #region 内部クラス
+
+        /// <summary></summary>
+        public class NestedClass1
+        {
+            /// <summary></summary>
+            public NestedClass1() { }
+
+            /// <summary></summary>
+            public class NestedClass2
+            {
+                /// <summary></summary>
+                public NestedClass2() { }
+            }
+        }
+
+        internal class NestedInternalClass
+        {
+            public NestedInternalClass() { }
+        }
+
+        /// <summary></summary>
+        internal protected class NestedInternalProtectedClass
+        {
+            /// <summary></summary>
+            public NestedInternalProtectedClass() { }
+        }
+
+        private class NestedPrivateClass
+        {
+            public NestedPrivateClass() { }
+        }
+
+        /// <summary></summary>
+        protected class NestedProtectedClass
+        {
+            /// <summary></summary>
+            public NestedProtectedClass() { }
+        }
+
+        /// <summary></summary>
+        public class NestedPublicClass
+        {
+            /// <summary></summary>
+            public NestedPublicClass() { }
+        }
 
         #endregion
     }

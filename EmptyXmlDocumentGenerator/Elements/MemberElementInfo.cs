@@ -25,7 +25,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="type"></param>
         public MemberElementInfo(Type type)
         {
-            name = "T:" + type.FullName ?? "";
+            name = "T:" + type.FullName?.Replace("+", ".") ?? "";
             summary = new SummaryElementInfo();
             typeparams = type.GetGenericArguments().Select(a => new TypeparamElementInfo(a));
             parameters = null;
@@ -105,7 +105,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         private string GetDeclaringTypeName(MemberInfo member)
         {
             if (member.DeclaringType == null) { return ""; }
-            return member.DeclaringType.FullName + ".";
+            return member.DeclaringType.FullName.Replace("+", ".") + ".";
         }
 
         /// <summary>
