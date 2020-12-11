@@ -104,7 +104,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <returns></returns>
         private string GetDeclaringTypeName(MemberInfo member)
         {
-            if (member.DeclaringType == null) { return ""; }
+            if (member.DeclaringType?.FullName == null) { return ""; }
             return member.DeclaringType.FullName.Replace("+", ".") + ".";
         }
 
