@@ -23,4 +23,8 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del &quot;$(TargetDir)$(TargetName).deps.json&quot;&#xD;&#xA;del &quot;$(TargetDir)$(TargetName).runtimeconfig.dev.json&quot;&#xD;&#xA;" />
+  </Target>
+
 </Project>
