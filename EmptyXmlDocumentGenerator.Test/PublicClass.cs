@@ -130,6 +130,10 @@ namespace EmptyXmlDocumentGenerator.Test
 
         /// <summary></summary>
         /// <param name="arg1"></param>
+        public void NestedTypeArgumentMethod(NestedClass1 arg1) { }
+
+        /// <summary></summary>
+        /// <param name="arg1"></param>
         /// <param name="arg2"></param>
         /// <param name="arg3"></param>
         /// <returns></returns>
@@ -171,6 +175,11 @@ namespace EmptyXmlDocumentGenerator.Test
 
         /// <summary></summary>
         public void PublicMethod() { }
+
+        /// <summary></summary>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        public void RefArgumentMethod(ref int arg1, ref DateTime arg2) { }
 
         /// <summary></summary>
         /// <param name="arg1"></param>

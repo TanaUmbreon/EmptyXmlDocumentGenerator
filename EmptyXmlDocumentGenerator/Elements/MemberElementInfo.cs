@@ -152,13 +152,19 @@ namespace EmptyXmlDocumentGenerator.Elements
             string.Join(',', parameterTypes.Select(t => GetArgumentString(t)));
 
         /// <summary>
-        /// 指定したパラメータ
+        /// 指定したパラメータからメソッドまたはコンストラクタの引数部で使用する型情報を表す文字列を取得します。
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
         private string GetArgumentString(ParameterInfo parameter) => 
             GetArgumentString(parameter.ParameterType);
 
+        /// <summary>
+        /// 指定したパラメータの型情報から
+        /// メソッドまたはコンストラクタの引数部で使用する型情報を表す文字列を取得します。
+        /// </summary>
+        /// <param name="parameterType"></param>
+        /// <returns></returns>
         private string GetArgumentString(Type parameterType)
         {
             if (parameterType.IsGenericTypeParameter)
@@ -176,7 +182,8 @@ namespace EmptyXmlDocumentGenerator.Elements
                     "{" + GetArgumentsInnerString(parameterType.GetGenericArguments()) + "}";
             }
 
-            return parameterType.FullName ?? "";
+            // outパラメータは&→@に、ネストされた型へのアクセサは+→.に
+            return parameterType.FullName?.Replace('&', '@')?.Replace('+', '.') ?? "";
         }
 
         public XElement ToXElement()
