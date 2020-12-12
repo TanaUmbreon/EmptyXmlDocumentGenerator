@@ -116,7 +116,7 @@ namespace EmptyXmlDocumentGenerator.Elements
             if (method.IsAssembly) { return true; }
 
             // コンストラクタ以外の特殊メソッド(イベントハンドラのadd/remove、プロパティのset/getメソッド等)を除外する
-            if (method.IsSpecialName) { return true; }
+            if (method.IsSpecialName && !method.IsConstructor) { return true; }
 
             if (method.DeclaringType != declaringType) { return true; }
 
