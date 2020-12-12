@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "EmptyXmlDocumentGenerator": {
-      "commandName": "Project",
-      "commandLineArgs": "\"D:\\Visual Studio\\Projects\\EmptyXmlDocumentGenerator\\EmptyXmlDocumentGenerator.Test\\bin\\Debug\\netcoreapp3.1\\EmptyXmlDocumentGenerator.Test.dll\""
-    }
-  }
-}
