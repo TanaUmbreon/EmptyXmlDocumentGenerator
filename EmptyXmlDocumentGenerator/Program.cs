@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using EmptyXmlDocumentGenerator.Elements;
@@ -13,30 +12,27 @@ namespace EmptyXmlDocumentGenerator
         {
             try
             {
-                if (!args.Any())
+                var options = new CommandLineOption(args);
+                if (options.IsEmpty)
                 {
                     WriteHowToUse();
                     return;
                 }
+                options.ThrowIfTargetFileNotFound();
 
-                foreach (string fileName in args)
-                {
-                    var file = new FileInfo(fileName);
+                var file = new FileInfo(options.TargetFileName);
+                Assembly assembly = Assembly.LoadFrom(file.FullName);
+                DocElementInfo doc = new DocElementInfo(assembly);
+                var document = new XDocument(doc.ToXElement());
 
-                    Assembly assembly = Assembly.LoadFrom(file.FullName);
-                    DocElementInfo doc = new DocElementInfo(assembly);
-                    var document = new XDocument(doc.ToXElement());
-
-                    document.Save(Path.Combine(
-                        file.DirectoryName,
-                        Path.GetFileNameWithoutExtension(file.Name) + ".xml"));
-                }
+                document.Save(Path.Combine(
+                    file.DirectoryName,
+                    Path.GetFileNameWithoutExtension(file.Name) + ".xml"));
             }
             catch (Exception ex)
             {
                 WriteError(ex);
                 Environment.ExitCode = 1;
-                throw;
             }
         }
 
@@ -46,7 +42,13 @@ namespace EmptyXmlDocumentGenerator
             Console.WriteLine();
             Console.WriteLine("使用法:");
             string exeName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
-            Console.WriteLine($"    {exeName} 対象ファイル名1 [対象ファイル名2 ...]");
+            Console.WriteLine($"    {exeName} 対象ファイル名");
+            Console.WriteLine($"        [--ExcludeTypes 除外パターン1 [除外パターン2 ...]]");
+            Console.WriteLine();
+            Console.WriteLine("オプション:");
+            Console.WriteLine("    --ExcludeTypes 除外パターン");
+            Console.WriteLine("        正規表現で記述します。このパターン文字列が完全な型名に含まれる場合、");
+            Console.WriteLine("        その型情報を生成から除外します。");
             Console.WriteLine();
         }
 
