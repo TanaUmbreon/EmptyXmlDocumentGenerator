@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace EmptyXmlDocumentGenerator.Elements
@@ -15,10 +16,11 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <see cref="DocElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         /// <param name="assembly"></param>
-        public DocElementInfo(Assembly assembly)
+        /// <param name="excludeTypePatterns"></param>
+        public DocElementInfo(Assembly assembly, IEnumerable<string> excludeTypePatterns)
         {
             this.assembly = new AssemblyElementInfo(assembly);
-            members = new MembersElementInfo(assembly);
+            members = new MembersElementInfo(assembly, excludeTypePatterns);
         }
 
         public XElement ToXElement() => new XElement("doc",

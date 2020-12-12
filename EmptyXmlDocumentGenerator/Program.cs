@@ -22,7 +22,7 @@ namespace EmptyXmlDocumentGenerator
 
                 var file = new FileInfo(options.TargetFileName);
                 Assembly assembly = Assembly.LoadFrom(file.FullName);
-                DocElementInfo doc = new DocElementInfo(assembly);
+                DocElementInfo doc = new DocElementInfo(assembly, options.ExcludeTypePatterns);
                 var document = new XDocument(doc.ToXElement());
 
                 document.Save(Path.Combine(
