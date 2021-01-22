@@ -1,4 +1,4 @@
-﻿namespace EmptyXmlDocumentGenerator.Test
+﻿namespace EmptyXmlDocumentGenerator.Test.XmlComments
 {
     /// <summary></summary>
     public enum PublicEnum

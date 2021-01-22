@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EmptyXmlDocumentGenerator.Test
+namespace EmptyXmlDocumentGenerator.Test.XmlComments
 {
     /// <summary></summary>
     /// <typeparam name="T"></typeparam>
