@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Linq;
 
@@ -21,6 +22,16 @@ namespace EmptyXmlDocumentGenerator.Elements
         {
             this.assembly = new AssemblyElementInfo(assembly);
             members = new MembersElementInfo(assembly, excludeTypePatterns);
+        }
+
+        public DocElementInfo(XDocument document)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Merge(DocElementInfo mergeBase)
+        {
+            throw new NotImplementedException();
         }
 
         public XElement ToXElement() => new XElement("doc",

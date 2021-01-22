@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
@@ -12,28 +13,46 @@ namespace EmptyXmlDocumentGenerator
         {
             try
             {
-                var options = new CommandLineOption(args);
-                if (options.IsEmpty)
+                var options = CommandOptionSet.ParseFrom(args);
+
+                var targetFile = new FileInfo(options.TargetExecutionFilePath);
+                Assembly targetAssembly = Assembly.LoadFrom(targetFile.FullName);
+                var target = new DocElementInfo(targetAssembly, options.ExcludeTypePatterns);
+
+                if (!string.IsNullOrEmpty(options.MergeBaseXmlDocumentPath))
                 {
-                    WriteHowToUse();
-                    return;
+                    XDocument mergeBaseDoc = XDocument.Load(options.MergeBaseXmlDocumentPath);
+                    var mergeBase = new DocElementInfo(mergeBaseDoc);
+                    target.Merge(mergeBase);
                 }
-                options.ThrowIfTargetFileNotFound();
 
-                var file = new FileInfo(options.TargetFileName);
-                Assembly assembly = Assembly.LoadFrom(file.FullName);
-                DocElementInfo doc = new DocElementInfo(assembly, options.ExcludeTypePatterns);
-                var document = new XDocument(doc.ToXElement());
-
-                document.Save(Path.Combine(
-                    file.DirectoryName,
-                    Path.GetFileNameWithoutExtension(file.Name) + ".xml"));
+                var targertDocument = new XDocument(target.ToXElement());
+                targertDocument.Save(Path.Combine(
+                    targetFile.DirectoryName,
+                    Path.GetFileNameWithoutExtension(targetFile.Name) + ".xml"));
+            }
+            catch (InvalidCastException)
+            {
+                WriteHowToUse();
+                return;
             }
             catch (Exception ex)
             {
                 WriteError(ex);
                 Environment.ExitCode = 1;
             }
+        }
+
+        private static Dictionary<string, string> LoadBaseMembers(string path)
+        {
+            var members = new Dictionary<string, string>();
+            if (string.IsNullOrEmpty(path)) { return members; }
+
+            XDocument doc = XDocument.Load(path);
+            var elements = doc.Root.Element("members")?.Elements("member");
+            if (elements == null) { return members; }
+
+            return members;
         }
 
         private static void WriteHowToUse()

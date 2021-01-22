@@ -23,6 +23,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="del &quot;$(TargetDir)$(TargetName).deps.json&quot;&#xD;&#xA;del &quot;$(TargetDir)$(TargetName).runtimeconfig.dev.json&quot;&#xD;&#xA;" />
   </Target>
