@@ -31,7 +31,7 @@ namespace EmptyXmlDocumentGenerator
                     targetFile.DirectoryName,
                     Path.GetFileNameWithoutExtension(targetFile.Name) + ".xml"));
             }
-            catch (InvalidCastException)
+            catch (InvalidCommandLineArgsException)
             {
                 WriteHowToUse();
                 return;

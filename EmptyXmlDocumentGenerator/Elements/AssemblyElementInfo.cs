@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 
@@ -7,9 +9,12 @@ namespace EmptyXmlDocumentGenerator.Elements
     /// <summary>
     /// assembly 要素の情報を格納します。
     /// </summary>
+    [DebuggerDisplay("<{ElementName,nq}>...</{ElementName,nq}>")]
     public class AssemblyElementInfo : IXElementConvertable
     {
-        private readonly NameElementInfo name;
+        public const string ElementName = "assembly";
+
+        public NameElementInfo Name { get; private set; }
 
         /// <summary>
         /// <see cref="AssemblyElementInfo"/> の新しいインスタンスを生成します。
@@ -17,9 +22,16 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="assembly"></param>
         public AssemblyElementInfo(Assembly assembly)
         {
-            name = new NameElementInfo(Path.GetFileNameWithoutExtension(assembly.Location));
+            Name = new NameElementInfo(Path.GetFileNameWithoutExtension(assembly.Location));
         }
 
-        public XElement ToXElement() => new XElement("assembly", name.ToXElement());
+        public AssemblyElementInfo(XElement element)
+        {
+            if ((element == null) || (element.Name != ElementName)) { throw new InvalidCastException(); }
+
+            Name = new NameElementInfo(element.Element(NameElementInfo.ElementName));
+        }
+
+        public XElement ToXElement() => new XElement(ElementName, Name.ToXElement());
     }
 }

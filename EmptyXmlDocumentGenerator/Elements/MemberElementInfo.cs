@@ -4,15 +4,20 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace EmptyXmlDocumentGenerator.Elements
 {
     /// <summary>
     /// member 要素の情報を格納します。
     /// </summary>
+    [DebuggerDisplay("<{ElementName,nq} {NameAttributeName,nq}={Name}>...</{ElementName,nq}>")]
     public class MemberElementInfo : IXElementConvertable
     {
-        private readonly string name;
+        public const string ElementName = "member";
+        private const string NameAttributeName = "name";
+
+        public string Name { get; private set; }
 
         private readonly SummaryElementInfo summary;
         private readonly IEnumerable<TypeparamElementInfo>? typeparams;
@@ -25,7 +30,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="type"></param>
         public MemberElementInfo(Type type)
         {
-            name = "T:" + type.FullName?.Replace("+", ".") ?? "";
+            Name = "T:" + type.FullName?.Replace("+", ".") ?? "";
             summary = new SummaryElementInfo();
             typeparams = type.GetGenericArguments().Select(a => new TypeparamElementInfo(a));
             parameters = null;
@@ -38,7 +43,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="@event"></param>
         public MemberElementInfo(EventInfo @event)
         {
-            name = "E:" + GetDeclaringTypeName(@event) + @event.Name;
+            Name = "E:" + GetDeclaringTypeName(@event) + @event.Name;
             summary = new SummaryElementInfo();
             typeparams = null;
             parameters = null;
@@ -51,7 +56,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="field"></param>
         public MemberElementInfo(FieldInfo field)
         {
-            name = "F:" + GetDeclaringTypeName(field) + field.Name;
+            Name = "F:" + GetDeclaringTypeName(field) + field.Name;
             summary = new SummaryElementInfo();
             typeparams = null;
             parameters = null;
@@ -64,7 +69,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="constructor"></param>
         public MemberElementInfo(ConstructorInfo constructor)
         {
-            name = "M:" + GetDeclaringTypeName(constructor) + GetName(constructor) + GetArgumentFullString(constructor);
+            Name = "M:" + GetDeclaringTypeName(constructor) + GetName(constructor) + GetArgumentFullString(constructor);
             summary = new SummaryElementInfo();
             typeparams = null;
             parameters = constructor.GetParameters().Select(p => new ParamElementInfo(p));
@@ -77,7 +82,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="method"></param>
         public MemberElementInfo(MethodInfo method)
         {
-            name = "M:" + GetDeclaringTypeName(method) + GetName(method) + GetArgumentFullString(method);
+            Name = "M:" + GetDeclaringTypeName(method) + GetName(method) + GetArgumentFullString(method);
             summary = new SummaryElementInfo();
             typeparams = method.GetGenericArguments().Select(a => new TypeparamElementInfo(a));
             parameters = method.GetParameters().Select(p => new ParamElementInfo(p));
@@ -90,7 +95,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="property"></param>
         public MemberElementInfo(PropertyInfo property)
         {
-            name = "P:" + GetDeclaringTypeName(property) + property.Name;
+            Name = "P:" + GetDeclaringTypeName(property) + property.Name;
             summary = new SummaryElementInfo();
             typeparams = null;
             parameters = null;
@@ -186,6 +191,31 @@ namespace EmptyXmlDocumentGenerator.Elements
             return parameterType.FullName?.Replace('&', '@')?.Replace('+', '.') ?? "";
         }
 
+        public MemberElementInfo(XElement element)
+        {
+            if ((element == null) || (element.Name != ElementName)) { throw new InvalidCastException(); }
+            var attribute = element.Attribute(NameAttributeName);
+            if (attribute == null) { throw new InvalidCastException(); }
+            summary = new SummaryElementInfo(element.Element(SummaryElementInfo.ElementName));
+            typeparams = null;
+            parameters = null;
+            returns = null;
+            Name = attribute.Value;
+
+            if (element.Elements(TypeparamElementInfo.ElementName).Any())
+            {
+                typeparams = element.Elements(TypeparamElementInfo.ElementName).Select(e => new TypeparamElementInfo(e));
+            }
+            if (element.Elements(ParamElementInfo.ElementName).Any())
+            {
+                parameters = element.Elements(ParamElementInfo.ElementName).Select(e => new ParamElementInfo(e));
+            }
+            if (element.Element(ReturnsElementInfo.ElementName) != null)
+            {
+                returns = new ReturnsElementInfo(element.Element(ReturnsElementInfo.ElementName));
+            }
+        }
+
         public XElement ToXElement()
         {
             var elements = new List<IXElementConvertable> { summary };
@@ -193,8 +223,8 @@ namespace EmptyXmlDocumentGenerator.Elements
             if (parameters != null) { elements.AddRange(parameters); }
             if (returns != null) { elements.Add(returns); }
 
-            return new XElement("member", 
-                new XAttribute("name", name),
+            return new XElement(ElementName, 
+                new XAttribute(NameAttributeName, Name),
                 elements.Select(e => e.ToXElement()));
         }
     }

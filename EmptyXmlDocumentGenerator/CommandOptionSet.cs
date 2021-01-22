@@ -48,7 +48,7 @@ namespace EmptyXmlDocumentGenerator
 
             CommandOptionSet result = p.ParseArguments<CommandOptionSet>(args).MapResult(
                 options => options,
-                _ => throw new InvalidCastException("コマンド ライン引数の変換に失敗しました。")
+                _ => throw new InvalidCommandLineArgsException("コマンド ライン引数の変換に失敗しました。")
                 );
 
             return result;

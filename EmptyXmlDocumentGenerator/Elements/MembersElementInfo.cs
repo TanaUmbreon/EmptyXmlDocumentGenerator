@@ -4,14 +4,17 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace EmptyXmlDocumentGenerator.Elements
 {
     /// <summary>
     /// members 要素の情報を格納します。
     /// </summary>
+    [DebuggerDisplay("<{ElementName,nq}>...</{ElementName,nq}>")]
     public class MembersElementInfo : IXElementConvertable
     {
+        public const string ElementName = "members";
         private readonly List<MemberElementInfo> members;
 
         /// <summary>
@@ -136,6 +139,35 @@ namespace EmptyXmlDocumentGenerator.Elements
             return false;
         }
 
-        public XElement ToXElement() => new XElement("members", members.Select(m => m.ToXElement()));
+        public MembersElementInfo(XElement element)
+        {
+            if ((element == null) || (element.Name != ElementName)) { throw new InvalidCastException(); }
+
+            members = new List<MemberElementInfo>();
+
+            foreach (var child in element.Elements(MemberElementInfo.ElementName))
+            {
+                members.Add(new MemberElementInfo(child));
+            }
+        }
+
+        public XElement ToXElement() => new XElement(ElementName, members.Select(m => m.ToXElement()));
+
+        internal void Merge(MembersElementInfo mergeBase)
+        {
+            var baseMembers = new Dictionary<string, MemberElementInfo>();
+            foreach (var baseMember in mergeBase.members)
+            {
+                baseMembers.TryAdd(baseMember.Name, baseMember);
+            }
+            foreach (var (member, index) in new List<MemberElementInfo>(members).Select((m, i) => (m,i)))
+            {
+                if (!baseMembers.ContainsKey(member.Name)) { continue; }
+                
+                MemberElementInfo baseMember = baseMembers[member.Name];
+                baseMembers.Remove(member.Name);
+                members[index] = baseMember;
+            }
+        }
     }
 }
