@@ -15,7 +15,6 @@ namespace EmptyXmlDocumentGenerator
         /// <summary>
         /// XML ドキュメントの生成対象となる実行ファイルのパスを取得または設定します。
         /// </summary>
-        [Value(index: 0, MetaName = "Target")]
         [Option(longName: "Target", Required = true)]
         public string TargetExecutionFilePath { get; set; } = "";
 
@@ -37,14 +36,6 @@ namespace EmptyXmlDocumentGenerator
         public CommandOptionSet() { }
 
         /// <summary>
-        /// 現在のインスタンスの状態がアプリケーションを実行するのに不正となる場合、例外をスローします。
-        /// </summary>
-        public void ThrowIfInvalidState()
-        {
-
-        }
-
-        /// <summary>
         /// 指定したコマンド ライン引数を解析して、
         /// <see cref="CommandOptionSet"/> のインスタンスに変換して返します。
         /// </summary>
@@ -59,7 +50,6 @@ namespace EmptyXmlDocumentGenerator
                 options => options,
                 _ => throw new InvalidCastException("コマンド ライン引数の変換に失敗しました。")
                 );
-            result.ThrowIfInvalidState();
 
             return result;
         }
