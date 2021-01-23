@@ -8,9 +8,9 @@ using CommandLine;
 namespace EmptyXmlDocumentGenerator
 {
     /// <summary>
-    /// コマンドの実行オプション セットを格納します。
+    /// コマンドの実行オプションを格納します。
     /// </summary>
-    public class CommandOptionSet
+    public class Options
     {
         /// <summary>
         /// XML ドキュメントの生成対象となる実行ファイルのパスを取得または設定します。
@@ -19,7 +19,7 @@ namespace EmptyXmlDocumentGenerator
         public string TargetExecutionFilePath { get; set; } = "";
 
         /// <summary>
-        /// メッセージ本文として使用するマージ元の XML ドキュメントのパスを取得または設定します。
+        /// メッセージ本文のマージ元として使用する XML ドキュメントのパスを取得または設定します。
         /// </summary>
         [Option(longName: "MergeBase", Required = false)]
         public string MergeBaseXmlDocumentPath { get; set; } = "";
@@ -31,25 +31,35 @@ namespace EmptyXmlDocumentGenerator
         public IEnumerable<string> ExcludeTypePatterns { get; set; } = Array.Empty<string>();
 
         /// <summary>
-        /// <see cref="CommandOptionSet"/> の新しいインスタンスを生成します。
+        /// 型情報の生成に含める型名のパターンのコレクションを取得または設定します。
         /// </summary>
-        public CommandOptionSet() { }
+        [Option(longName: "IncludeTypes", Required = false)]
+        public IEnumerable<string> IncludeTypePatterns { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// <see cref="Options"/> の新しいインスタンスを生成します。
+        /// </summary>
+        public Options() { }
 
         /// <summary>
         /// 指定したコマンド ライン引数を解析して、
-        /// <see cref="CommandOptionSet"/> のインスタンスに変換して返します。
+        /// <see cref="Options"/> のインスタンスに変換して返します。
         /// </summary>
         /// <param name="args">コマンド ライン引数。</param>
         /// <returns>コマンド ライン引数から解析されたコマンドの実行オプション セット。</returns>
-        public static CommandOptionSet ParseFrom(IEnumerable<string> args)
+        public static Options ParseFrom(IEnumerable<string> args)
         {
             // 未定義の引数は無視する
             using var p = new Parser(config => config.IgnoreUnknownArguments = true);
 
-            CommandOptionSet result = p.ParseArguments<CommandOptionSet>(args).MapResult(
+            Options result = p.ParseArguments<Options>(args).MapResult(
                 options => options,
                 _ => throw new InvalidCommandLineArgsException("コマンド ライン引数の変換に失敗しました。")
                 );
+            if (result.ExcludeTypePatterns.Any() && result.IncludeTypePatterns.Any())
+            {
+                throw new InvalidCommandLineArgsException("オプション --ExcludeTypes と --IncludeTypes は片方のみ指定できます。");
+            }
 
             return result;
         }

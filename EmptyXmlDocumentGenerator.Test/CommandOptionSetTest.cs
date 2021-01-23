@@ -35,9 +35,9 @@ namespace EmptyXmlDocumentGenerator.Test
             }
         }
 
-        private CommandOptionSet CreateCommandOptionSet(params string[] args)
+        private Options CreateCommandOptionSet(params string[] args)
         {
-            return CommandOptionSet.ParseFrom(args);
+            return Options.ParseFrom(args);
         }
     }
 }

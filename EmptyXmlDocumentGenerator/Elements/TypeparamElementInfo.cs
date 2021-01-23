@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Linq;
 
@@ -13,7 +14,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         public const string ElementName = "typeparam";
         private const string NameAttributeName = "name";
         private readonly string name;
-        private readonly string content;
+        private readonly IEnumerable<XNode> nodes;
 
         /// <summary>
         /// <see cref="TypeparamElementInfo"/> の新しいインスタンスを生成します。
@@ -21,7 +22,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         public TypeparamElementInfo(Type type)
         {
             name = type.Name;
-            content = "";
+            nodes = XNodeHelper.EmptyNodes;
         }
 
         public TypeparamElementInfo(XElement element)
@@ -30,11 +31,11 @@ namespace EmptyXmlDocumentGenerator.Elements
             var attribute = element.Attribute(NameAttributeName);
             if (attribute == null) { throw new InvalidCastException(); }
             name = attribute.Value;
-            content = element.Value;
+            nodes = XNodeHelper.IsEmptyNodes(element.Nodes()) ? XNodeHelper.EmptyNodes : element.Nodes();
         }
 
         public XElement ToXElement() => new XElement(ElementName, 
             new XAttribute(NameAttributeName, name),
-            content);
+            nodes);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Linq;
 
@@ -11,22 +12,22 @@ namespace EmptyXmlDocumentGenerator.Elements
     public class SummaryElementInfo : IXElementConvertable
     {
         public const string ElementName = "summary";
-        private readonly string content;
+        private readonly IEnumerable<XNode> nodes;
 
         /// <summary>
         /// <see cref="SummaryElementInfo"/> の新しいインスタンスを生成します。
         /// </summary>
         public SummaryElementInfo() 
         {
-            content = "";
+            nodes = XNodeHelper.EmptyNodes;
         }
 
         public SummaryElementInfo(XElement element)
         {
             if ((element == null) || (element.Name != ElementName)) { throw new InvalidCastException(); }
-            content = element.Value;
+            nodes = XNodeHelper.IsEmptyNodes(element.Nodes()) ? XNodeHelper.EmptyNodes : element.Nodes();
         }
 
-        public XElement ToXElement() => new XElement(ElementName, content);
+        public XElement ToXElement() => new XElement(ElementName, nodes);
     }
 }

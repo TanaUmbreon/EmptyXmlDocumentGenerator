@@ -1,7 +1,8 @@
-﻿using System.Xml.Linq;
-using System.Reflection;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace EmptyXmlDocumentGenerator.Elements
 {
@@ -14,7 +15,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         public const string ElementName = "param";
         private const string NameAttributeName = "name";
         private readonly string name;
-        private readonly string content;
+        private readonly IEnumerable<XNode> nodes;
 
         /// <summary>
         /// <see cref="ParamElementInfo"/> の新しいインスタンスを生成します。
@@ -23,7 +24,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         public ParamElementInfo(ParameterInfo parameter)
         {
             name = parameter.Name ?? "";
-            content = "";
+            nodes = XNodeHelper.EmptyNodes;
         }
 
         public ParamElementInfo(XElement element)
@@ -32,11 +33,11 @@ namespace EmptyXmlDocumentGenerator.Elements
             var attribute = element.Attribute(NameAttributeName);
             if (attribute == null) { throw new InvalidCastException(); }
             name = attribute.Value;
-            content = element.Value;
+            nodes = XNodeHelper.IsEmptyNodes(element.Nodes()) ? XNodeHelper.EmptyNodes : element.Nodes();
         }
 
         public XElement ToXElement() => new XElement(ElementName,
             new XAttribute(NameAttributeName, name),
-            content);
+            nodes);
     }
 }

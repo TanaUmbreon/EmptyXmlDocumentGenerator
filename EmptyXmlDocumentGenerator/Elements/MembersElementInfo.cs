@@ -22,15 +22,18 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// </summary>
         /// <param name="assembly"></param>
         /// <param name="excludeTypePatterns"></param>
-        public MembersElementInfo(Assembly assembly, IEnumerable<string> excludeTypePatterns)
+        /// <param name="includeTypePatterns"></param>
+        public MembersElementInfo(Assembly assembly, IEnumerable<string> excludeTypePatterns, IEnumerable<string> includeTypePatterns)
         {
             members = new List<MemberElementInfo>();
 
-            var patterns = excludeTypePatterns.Select(p => new Regex(p));
+            var excludes = excludeTypePatterns.Any() ? excludeTypePatterns.Select(p => new Regex(p)) : null;
+            var includes = includeTypePatterns.Any() ? includeTypePatterns.Select(p => new Regex(p)) : null;
 
             foreach (Type t in assembly.DefinedTypes.OrderBy(t => t.Namespace).OrderBy(t=> t.FullName))
             {
-                if (IsExclude(t, patterns)) { continue; }
+                if ((excludes != null) && IsExclude(t, excludes)) { continue; }
+                if ((includes != null) && !IsInclude(t, includes)) { continue; }
                 members.Add(new MemberElementInfo(t));
 
                 foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
@@ -86,6 +89,27 @@ namespace EmptyXmlDocumentGenerator.Elements
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 指定した型が member 要素への追加に含めることを示します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="includePatterns"></param>
+        /// <returns></returns>
+        private bool IsInclude(Type type, IEnumerable<Regex> includePatterns)
+        {
+            if (type.IsNested)
+            {
+                if (type.IsNestedAssembly) { return false; }
+                if (type.IsNestedPrivate) { return false; }
+            }
+            else
+            {
+                if (type.IsNotPublic) { return false; }
+            }
+
+            return includePatterns.Any(p => p.IsMatch(type.FullName?.Replace("+", ".")));
         }
 
         private bool IsExclude(EventInfo @event, Type declaringType)

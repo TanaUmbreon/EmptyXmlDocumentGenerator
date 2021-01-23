@@ -22,10 +22,11 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// </summary>
         /// <param name="assembly"></param>
         /// <param name="excludeTypePatterns"></param>
-        public DocElementInfo(Assembly assembly, IEnumerable<string> excludeTypePatterns)
+        /// <param name="includeTypePatterns"></param>
+        public DocElementInfo(Assembly assembly, IEnumerable<string> excludeTypePatterns, IEnumerable<string> includeTypePatterns)
         {
             Assembly = new AssemblyElementInfo(assembly);
-            Members = new MembersElementInfo(assembly, excludeTypePatterns);
+            Members = new MembersElementInfo(assembly, excludeTypePatterns, includeTypePatterns);
         }
 
         public DocElementInfo(XDocument document)

@@ -13,11 +13,11 @@ namespace EmptyXmlDocumentGenerator
         {
             try
             {
-                var options = CommandOptionSet.ParseFrom(args);
+                var options = Options.ParseFrom(args);
 
                 var targetFile = new FileInfo(options.TargetExecutionFilePath);
                 Assembly targetAssembly = Assembly.LoadFrom(targetFile.FullName);
-                var target = new DocElementInfo(targetAssembly, options.ExcludeTypePatterns);
+                var target = new DocElementInfo(targetAssembly, options.ExcludeTypePatterns, options.IncludeTypePatterns);
 
                 if (!string.IsNullOrEmpty(options.MergeBaseXmlDocumentPath))
                 {
@@ -34,25 +34,12 @@ namespace EmptyXmlDocumentGenerator
             catch (InvalidCommandLineArgsException)
             {
                 WriteHowToUse();
-                return;
             }
             catch (Exception ex)
             {
                 WriteError(ex);
                 Environment.ExitCode = 1;
             }
-        }
-
-        private static Dictionary<string, string> LoadBaseMembers(string path)
-        {
-            var members = new Dictionary<string, string>();
-            if (string.IsNullOrEmpty(path)) { return members; }
-
-            XDocument doc = XDocument.Load(path);
-            var elements = doc.Root.Element("members")?.Elements("member");
-            if (elements == null) { return members; }
-
-            return members;
         }
 
         private static void WriteHowToUse()
