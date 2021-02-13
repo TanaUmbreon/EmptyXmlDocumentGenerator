@@ -43,6 +43,9 @@ namespace EmptyXmlDocumentGenerator.Test.XmlComments
         #region F:フィールド
 
         /// <summary></summary>
+        public T[] arrayField;
+
+        /// <summary></summary>
         public IList<T> genericField;
     
         internal T internalField;
@@ -124,6 +127,22 @@ namespace EmptyXmlDocumentGenerator.Test.XmlComments
         /// <returns></returns>
         public T GenericMethod3<T1, T3>(T1 arg1, T2 arg2, T3 arg3, T1 arg4) => default;
 
+        /// <summary></summary>
+        /// <param name="args"></param>
+        public void GenericParamsMethod1(params T[] args) { }
+
+        /// <summary></summary>
+        /// <typeparam name="T3"></typeparam>
+        /// <param name="args"></param>
+        public void GenericParamsMethod2<T3>(params T3[] args) { }
+
+        /// <summary></summary>
+        /// <typeparam name="T3"></typeparam>
+        /// <typeparam name="T4"></typeparam>
+        /// <param name="args1"></param>
+        /// <param name="args2"></param>
+        public void GenericParamsMethod2<T3, T4>(T4[] args1, params T3[] args2) { }
+
         internal void InternalMethod() { }
 
         /// <summary></summary>
@@ -158,6 +177,10 @@ namespace EmptyXmlDocumentGenerator.Test.XmlComments
         /// <param name="arg3"></param>
         /// <returns></returns>
         public int OverloadMethod(int arg1, Exception arg2, IEnumerable<DateTime> arg3) => 0;
+
+        /// <summary></summary>
+        /// <param name="args"></param>
+        public void ParamsMethod(params int[] args) { }
 
         /// <summary></summary>
         protected internal void ProtectedInternalMethod() { }

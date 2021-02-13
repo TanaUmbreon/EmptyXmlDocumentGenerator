@@ -82,6 +82,7 @@ namespace EmptyXmlDocumentGenerator.Elements
         /// <param name="method"></param>
         public MemberElementInfo(MethodInfo method)
         {
+            string name = method.Name;
             Name = "M:" + GetDeclaringTypeName(method) + GetName(method) + GetArgumentFullString(method);
             summary = new SummaryElementInfo();
             typeparams = method.GetGenericArguments().Select(a => new TypeparamElementInfo(a));
@@ -185,6 +186,16 @@ namespace EmptyXmlDocumentGenerator.Elements
                 return parameterType.Namespace + "." +
                     Regex.Replace(parameterType.Name, @"`\d+", "") +
                     "{" + GetArgumentsInnerString(parameterType.GetGenericArguments()) + "}";
+            }
+
+            // ジェネリクスな配列の場合
+            if (parameterType.FullName is null)
+            {
+                // ToDo: "`0[]" や "``0[]" のように出力しないと XML ドキュメントとして認識しないが、その実装方法が未解決。 `parameterType.GenericParameterPosition` では例外がスローされる。
+
+                //var info = parameterType.GetTypeInfo();
+                //var member = info.DeclaredMembers.FirstOrDefault(m => m?.ReflectedType?.Name == parameterType.Name);
+                return parameterType.Name;
             }
 
             // outパラメータは&→@に、ネストされた型へのアクセサは+→.に
