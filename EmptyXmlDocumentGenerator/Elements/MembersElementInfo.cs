@@ -30,41 +30,52 @@ namespace EmptyXmlDocumentGenerator.Elements
             var excludes = excludeTypePatterns.Any() ? excludeTypePatterns.Select(p => new Regex(p)) : null;
             var includes = includeTypePatterns.Any() ? includeTypePatterns.Select(p => new Regex(p)) : null;
 
-            foreach (Type t in assembly.DefinedTypes.OrderBy(t => t.Namespace).OrderBy(t=> t.FullName))
+            foreach (Type t in assembly.DefinedTypes.Where(t => t.IsPublic).OrderBy(t => t.Namespace).OrderBy(t=> t.FullName))
             {
-                if ((excludes != null) && IsExclude(t, excludes)) { continue; }
-                if ((includes != null) && !IsInclude(t, includes)) { continue; }
-                members.Add(new MemberElementInfo(t));
+                AddMember(t, excludes, includes);
+            }
+        }
 
-                foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
-                {
-                    if (IsExclude(@event, t)) { continue; }
-                    members.Add(new MemberElementInfo(@event));
-                }
+        private void AddMember(Type t, IEnumerable<Regex>? excludes, IEnumerable<Regex>? includes)
+        {
+            if ((excludes != null) && IsExclude(t, excludes)) { return; }
+            if ((includes != null) && !IsInclude(t, includes)) { return; }
+            members.Add(new MemberElementInfo(t));
 
-                foreach (var field in t.GetRuntimeFields().OrderBy(f => f.Name))
-                {
-                    if (IsExclude(field, t)) { continue; }
-                    members.Add(new MemberElementInfo(field));
-                }
+            foreach (var @event in t.GetRuntimeEvents().OrderBy(e => e.Name))
+            {
+                if (IsExclude(@event, t)) { continue; }
+                members.Add(new MemberElementInfo(@event));
+            }
 
-                foreach (var constructor in t.GetConstructors().OrderBy(c => c.Name))
-                {
-                    if (IsExclude(constructor, t)) { continue; }
-                    members.Add(new MemberElementInfo(constructor));
-                }
+            foreach (var field in t.GetRuntimeFields().OrderBy(f => f.Name))
+            {
+                if (IsExclude(field, t)) { continue; }
+                members.Add(new MemberElementInfo(field));
+            }
 
-                foreach (var method in t.GetRuntimeMethods().OrderBy(m => m.Name))
-                {
-                    if (IsExclude(method, t)) { continue; }
-                    members.Add(new MemberElementInfo(method));
-                }
+            foreach (var constructor in t.GetConstructors().OrderBy(c => c.Name))
+            {
+                if (IsExclude(constructor, t)) { continue; }
+                members.Add(new MemberElementInfo(constructor));
+            }
 
-                foreach (var property in t.GetRuntimeProperties().OrderBy(p => p.Name))
-                {
-                    if (IsExclude(property, t)) { continue; }
-                    members.Add(new MemberElementInfo(property));
-                }
+            foreach (var method in t.GetRuntimeMethods().OrderBy(m => m.Name))
+            {
+                if (IsExclude(method, t)) { continue; }
+                members.Add(new MemberElementInfo(method));
+            }
+
+            foreach (var property in t.GetRuntimeProperties().OrderBy(p => p.Name))
+            {
+                if (IsExclude(property, t)) { continue; }
+                members.Add(new MemberElementInfo(property));
+            }
+
+            foreach (Type nestedType in t.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                if (nestedType.IsNestedPrivate || nestedType.IsNestedFamANDAssem || nestedType.IsNestedAssembly) { continue; }
+                AddMember(nestedType, excludes, includes);
             }
         }
 
